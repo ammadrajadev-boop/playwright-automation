@@ -1,0 +1,31 @@
+import { test, expect } from '@playwright/test';
+
+test('test to-do app @smoke', async ({ page }) => {
+  await page.goto('https://todomvc.com/');
+  await page.getByRole('link', { name: 'React New', exact: true }).click();
+  await page.getByTestId('text-input').click();
+  await page.getByTestId('text-input').fill('playing cricket');
+  await page.getByTestId('text-input').press('Enter');
+  await page.getByTestId('text-input').fill('eat food');
+  await page.getByTestId('text-input').press('Enter');
+  await page.getByTestId('text-input').fill('sleeping');
+  await page.getByTestId('text-input').press('Enter');
+  await page.getByTestId('text-input').fill('playwright testing');
+  await page.getByTestId('text-input').press('Enter');
+  await page.getByRole('listitem').filter({ hasText: 'playwright testing' }).getByTestId('todo-item-toggle').check();
+//   await page.pause();
+  await expect(page.getByRole('link', { name: 'Active' })).toBeVisible();
+  await page.getByRole('link', { name: 'Active' }).click();
+  await expect(page.getByText('eat food')).toBeVisible();
+  await expect(page.getByTestId('todo-list')).toContainText('sleeping');
+  await page.getByTestId('footer-navigation').click();
+  await page.getByRole('button', { name: 'Clear completed' }).click();
+  await expect(page.getByText('sleeping')).toBeVisible();
+//   await page.getByRole('listitem').filter({ hasText: 'sleeping' }).getByTestId('todo-item-toggle').check();
+  await page.goto('https://todomvc.com/examples/react/dist/#/completed');
+  await page.getByRole('link', { name: 'Active' }).click();
+  await page.getByRole('link', { name: 'Completed' }).click();
+  await page.getByRole('link', { name: 'Active' }).click();
+  await page.getByRole('link', { name: 'Completed' }).click();
+//   await expect(page.getByTestId('todo-item-label')).toContainText('eat');
+});
